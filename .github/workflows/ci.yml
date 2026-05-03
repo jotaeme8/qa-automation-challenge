@@ -1,0 +1,65 @@
+name: QA Automation Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  api-tests:
+    name: API Tests (Petstore)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Executar testes de API
+        working-directory: api-tests
+        run: pytest tests/ -v --tb=short --html=../reports/api-report.html --self-contained-html
+
+      - name: Publicar relatório de API
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-test-report
+          path: reports/api-report.html
+
+  web-tests:
+    name: Web Tests E2E (SauceDemo)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Instalar Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Executar testes E2E
+        working-directory: web-tests
+        run: pytest tests/ -v --tb=short --html=../reports/web-report.html --self-contained-html
+
+      - name: Publicar relatório Web
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: web-test-report
+          path: reports/web-report.html
