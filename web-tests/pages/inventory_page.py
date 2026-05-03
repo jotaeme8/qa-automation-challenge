@@ -14,8 +14,9 @@ class InventoryPage:
     def add_item_to_cart(self, item_name):
         items = self.driver.find_elements(By.CLASS_NAME, "inventory_item")
         for item in items:
-            if item_name in item.text:
-                item.find_element(By.TAG_NAME, "button").click()
+            if item_name in item.find_element(By.CLASS_NAME, "inventory_item_name").text:
+                btn = item.find_element(By.CSS_SELECTOR, "button[id^=add-to-cart]")
+                self.driver.execute_script("arguments[0].click();", btn)
                 return
         raise ValueError(f"Produto nao encontrado: {item_name}")
 
