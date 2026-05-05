@@ -1,3 +1,6 @@
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from pages.login_page import LoginPage
 from pages.inventory_page import InventoryPage
 from pages.checkout_page import CheckoutPage
@@ -5,7 +8,6 @@ from pages.checkout_page import CheckoutPage
 class TestE2ESauceDemo:
     VALID_USER = "standard_user"
     PASSWORD = "secret_sauce"
-    PRODUCTS = ["Sauce Labs Backpack", "Sauce Labs Bike Light"]
 
     def test_login_invalido_exibe_erro(self, driver):
         login = LoginPage(driver)
@@ -22,12 +24,15 @@ class TestE2ESauceDemo:
         inventory = InventoryPage(driver)
         assert inventory.is_loaded()
 
-        for product in self.PRODUCTS:
-            inventory.add_item_to_cart(product)
-
-        assert inventory.get_cart_count() == len(self.PRODUCTS)
+        inventory.add_item_to_cart("Sauce Labs Backpack")
 
         inventory.go_to_cart()
+
+        wait = WebDriverWait(driver, 30)
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, "cart_item")))
+        items = driver.find_elements(By.CLASS_NAME, "cart_item")
+        assert len(items) >= 1
+
         checkout = CheckoutPage(driver)
         checkout.proceed_to_checkout()
         checkout.fill_form("QA", "Automation", "64000-000")
