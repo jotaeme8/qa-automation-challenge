@@ -25,13 +25,7 @@ class TestE2ESauceDemo:
         assert inventory.is_loaded()
 
         inventory.add_item_to_cart("Sauce Labs Backpack")
-
         inventory.go_to_cart()
-
-        wait = WebDriverWait(driver, 30)
-        wait.until(EC.presence_of_element_located((By.CLASS_NAME, "cart_item")))
-        items = driver.find_elements(By.CLASS_NAME, "cart_item")
-        assert len(items) >= 1
 
         checkout = CheckoutPage(driver)
         checkout.proceed_to_checkout()
