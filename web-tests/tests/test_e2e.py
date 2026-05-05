@@ -1,6 +1,3 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pages.login_page import LoginPage
 from pages.inventory_page import InventoryPage
 from pages.checkout_page import CheckoutPage
