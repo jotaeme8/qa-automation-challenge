@@ -8,6 +8,7 @@ class CheckoutPage:
         self.wait = WebDriverWait(driver, 30)
 
     def proceed_to_checkout(self):
+        self.wait.until(EC.url_contains("cart"))
         btn = self.wait.until(EC.element_to_be_clickable((By.ID, "checkout")))
         self.driver.execute_script("arguments[0].click();", btn)
 
@@ -20,9 +21,11 @@ class CheckoutPage:
         self.driver.execute_script("arguments[0].click();", btn)
 
     def finish_order(self):
+        self.wait.until(EC.url_contains("checkout-step-two"))
         btn = self.wait.until(EC.element_to_be_clickable((By.ID, "finish")))
         self.driver.execute_script("arguments[0].click();", btn)
 
     def get_confirmation_text(self):
+        self.wait.until(EC.url_contains("checkout-complete"))
         element = self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "complete-header")))
         return element.text
