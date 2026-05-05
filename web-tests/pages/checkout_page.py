@@ -18,7 +18,6 @@ class CheckoutPage:
         self.driver.find_element(By.ID, "postal-code").send_keys(zip_code)
         btn = self.wait.until(EC.element_to_be_clickable((By.ID, "continue")))
         self.driver.execute_script("arguments[0].click();", btn)
-        self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "summary_info")))
 
     def finish_order(self):
         btn = self.wait.until(EC.element_to_be_clickable((By.ID, "finish")))
