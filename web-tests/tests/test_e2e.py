@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
 from pages.login_page import LoginPage
 from pages.inventory_page import InventoryPage
 from pages.checkout_page import CheckoutPage
