@@ -1,28 +1,26 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 
-class CheckoutPage:
-    def __init__(self, driver):
-        self.driver = driver
-        self.wait = WebDriverWait(driver, 30)
+from .base_page import BasePage
 
-    def proceed_to_checkout(self):
-        btn = self.wait.until(EC.element_to_be_clickable((By.ID, "checkout")))
-        self.driver.execute_script("arguments[0].click();", btn)
 
-    def fill_form(self, first_name, last_name, zip_code):
-        self.wait.until(EC.presence_of_element_located((By.ID, "first-name")))
-        self.driver.find_element(By.ID, "first-name").send_keys(first_name)
-        self.driver.find_element(By.ID, "last-name").send_keys(last_name)
-        self.driver.find_element(By.ID, "postal-code").send_keys(zip_code)
-        btn = self.wait.until(EC.element_to_be_clickable((By.ID, "continue")))
-        self.driver.execute_script("arguments[0].click();", btn)
+class CheckoutPage(BasePage):
+    def __init__(self, driver: WebDriver) -> None:
+        super().__init__(driver, timeout=30)
 
-    def finish_order(self):
-        btn = self.wait.until(EC.element_to_be_clickable((By.ID, "finish")))
-        self.driver.execute_script("arguments[0].click();", btn)
+    def proceed_to_checkout(self) -> None:
+        self.click_element(By.ID, "checkout")
 
-    def get_confirmation_text(self):
-        element = self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "complete-header")))
-        return element.text
+    def fill_form(self, first_name: str, last_name: str, zip_code: str) -> None:
+        self.find_element(By.ID, "first-name").send_keys(first_name)
+        self.find_element(By.ID, "last-name").send_keys(last_name)
+        self.find_element(By.ID, "postal-code").send_keys(zip_code)
+        self.click_element(By.ID, "continue")
+        self.find_element(By.ID, "checkout_summary_container")
+
+    def finish_order(self) -> None:
+        self.click_element(By.ID, "finish")
+
+    def get_confirmation_text(self) -> str:
+        return self.get_text(By.CLASS_NAME, "complete-header")
