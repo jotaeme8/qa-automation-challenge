@@ -6,6 +6,17 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 
+def get_driver_path():
+    driver_path = ChromeDriverManager().install()
+    driver_dir = os.path.dirname(driver_path)
+    for f in os.listdir(driver_dir):
+        if f == "chromedriver" or f == "chromedriver.exe":
+            full_path = os.path.join(driver_dir, f)
+            os.chmod(full_path, 0o755)
+            return full_path
+    raise RuntimeError(f"chromedriver não encontrado em {driver_dir}")
+
+
 @pytest.fixture(scope="function")
 def driver():
     options = Options()
@@ -24,10 +35,7 @@ def driver():
         "profile.default_content_setting_values.notifications": 2
     })
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
-
-    driver_path = ChromeDriverManager().install()
-    os.chmod(driver_path, 0o755)
-    service = Service(driver_path)
+    service = Service(get_driver_path())
     chrome = webdriver.Chrome(service=service, options=options)
     chrome.set_page_load_timeout(60)
     yield chrome
