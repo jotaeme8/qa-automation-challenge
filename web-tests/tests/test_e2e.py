@@ -1,23 +1,28 @@
-import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+import sys
+from typing import Final
 
-from pages.login_page import LoginPage
-from pages.inventory_page import InventoryPage
+root_path = os.path.dirname(os.path.dirname(__file__))
+sys.path.insert(0, root_path)
+
 from pages.checkout_page import CheckoutPage
+from pages.inventory_page import InventoryPage
+from pages.login_page import LoginPage
+
 
 class TestE2ESauceDemo:
-    VALID_USER = "standard_user"
-    PASSWORD = "secret_sauce"
+    VALID_USER: Final[str] = "standard_user"
+    PASSWORD: Final[str] = "secret_sauce"
 
-    def test_login_invalido_exibe_erro(self, driver):
+    def test_login_invalido_exibe_erro(self, driver) -> None:
         login = LoginPage(driver)
         login.open()
         login.login("usuario_errado", "senha_errada")
+
         error = login.get_error_message()
         assert "Username and password do not match" in error
 
-    def test_fluxo_completo_de_compra(self, driver):
+    def test_fluxo_completo_de_compra(self, driver) -> None:
         login = LoginPage(driver)
         login.open()
         login.login(self.VALID_USER, self.PASSWORD)
