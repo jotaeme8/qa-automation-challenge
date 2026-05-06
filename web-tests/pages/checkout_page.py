@@ -20,7 +20,6 @@ class CheckoutPage(BasePage):
         self.find_element(By.ID, "checkout_summary_container")
 
     def finish_order(self) -> None:
-        self.find_element(By.ID, "checkout_summary_container")
         self.click_element(By.ID, "finish")
 
     def get_confirmation_text(self) -> str:
